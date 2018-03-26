@@ -143,6 +143,21 @@ function UltraDate(year, month, day, hours, minutes, seconds, ms) {
     };
 
     /**
+     * 左側空白埋め（右側から桁数で切り取る）
+     *
+     * @param {Number} val 0埋めする値
+     * @param {Number} num 桁数
+     * @param {String} padString 延長するための文字列
+     * @return {String} 左側を空白埋めした文字列
+     */
+    var _padStart = function (val, num, padString) {
+        num = parseInt(num, 10);
+        num = isNaN(num) ? 2 : num;
+        padString = typeof typeString !== 'undefined' ? padString: ' ';
+        return num < 2 ? val : (new Array(num).join(padString) + val).slice(num * -1);
+    };
+
+    /**
      * Dateオブジェクトの取得
      *
      * @param {UltraDate|Date|String|Number} date
@@ -524,18 +539,23 @@ function UltraDate(year, month, day, hours, minutes, seconds, ms) {
                 MMMM: options.longMonth[this.getMonth()],
                 MMM: options.shortMonth[this.getMonth()],
                 MM: _padSlice(this.getRealMonth()),
+                M9: _padStart(this.getRealMonth()),
                 M: this.getRealMonth(),
                 dddd: this.getOrdinalDate(),
                 ddd: _padSlice(this.getOrdinalDate(), 3),
                 dd: _padSlice(this.getDate()),
+                d9: _padStart(this.getDate()),
                 d: this.getDate(),
                 HH: _padSlice(this.getHours()),
+                H9: _padStart(this.getHours()),
                 H: this.getHours(),
                 hh: _padSlice(this.getHours() - 12 * noon),
                 h: this.getHours() - 12 * noon,
                 mm: _padSlice(this.getMinutes()),
+                m9: _padStart(this.getMinutes()),
                 m: this.getMinutes(),
                 ss: _padSlice(this.getSeconds()),
+                s9: _padStart(this.getSeconds()),
                 s: this.getSeconds(),
                 fff: _padSlice(this.getMilliseconds(), 3),
                 f: this.getMilliseconds(),
