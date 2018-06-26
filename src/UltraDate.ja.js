@@ -25,16 +25,60 @@
         strFurikae: '振替休日', // 振替休日用の文字列
         dateFurikae: new Date(1973, 3, 12), // 振替休日の施行日
         strKokumin: '国民の休日', // 国民の休日用の文字列
-        dateKokumin: new Date(1985, 11, 27), // 国民の休日の施行日
-        dateHeisei: new Date(1989, 0, 8), // 平成の始まり
-        dateShowa: new Date(1926, 11, 25), // 昭和の始まり
-        dateTaisho: new Date(1912, 6, 30), // 大正の始まり
-        dateMeiji: new Date(1868, 0, 25), // 明治の始まり
-        yearHeisei: 1988, // 平成の始まり年の前の年
-        yearShowa: 1925, // 昭和の始まり年の前の年
-        yearTaisho: 1911, // 大正の始まり年の前の年
-        yearMeiji: 1867 // 明治の始まり年の前の年
+        dateKokumin: new Date(1985, 11, 27) // 国民の休日の施行日
     };
+
+    var eraConsts = [
+        {
+            startDate: new Date(2019, 5, 1),
+            previousYear: 2018,
+            longName: '徳仁',
+            shortName: '徳',
+            alphaName: 'N',
+            year:0
+        },
+        {
+            startDate: new Date(1989, 0, 8),
+            previousYear: 1988,
+            longName: '平成',
+            shortName: '平',
+            alphaName: 'H',
+            year:0
+        },
+        {
+            startDate: new Date(1926, 11, 25),
+            previousYear:1925,
+            longName: '昭和',
+            shortName: '昭',
+            alphaName: 'S',
+            year:0
+        },
+        {
+            startDate: new Date(1912, 6, 30),
+            previousYear:1911,
+            longName: '大正',
+            shortName: '大',
+            alphaName: 'T',
+            year:0
+        },
+        {
+            startDate: new Date(1868, 0, 25),
+            previousYear:1867,
+            longName: '明治',
+            shortName: '明',
+            alphaName: 'M',
+            year:0
+        },
+        {
+            startDate: null,
+            previousYear: 0,
+            longName: '西暦',
+            shortName: '西',
+            alphaName: 'AD',
+            year:0
+        }
+    ];
+
     // 日付フォーマットのオプション追加
     UltraDate.setFormatOption(consts.strLocale,
             {
@@ -50,79 +94,29 @@
                 largeNoon: ['午前', '午後'],
                 era: function (date) {
                     var year = date.getFullYear();
-                    var ret = {
-                        longName: '西暦',
-                        shortName: '西',
-                        alphaName: 'AD',
-                        year: year
-                    };
-                    if (year > consts.yearHeisei) {
-                        ret = {
-                            longName: '平成',
-                            shortName: '平',
-                            alphaName: 'H',
-                            year: year - consts.yearHeisei
-                        };
-                    } else if (year > consts.yearShowa) {
-                        ret = {
-                            longName: '昭和',
-                            shortName: '昭',
-                            alphaName: 'S',
-                            year: year - consts.yearShowa
-                        };
-                    } else if (year > consts.yearTaisho) {
-                        ret = {
-                            longName: '大正',
-                            shortName: '大',
-                            alphaName: 'T',
-                            year: year - consts.yearTaisho
-                        };
-                    } else if (year > consts.yearMeiji) {
-                        ret = {
-                            longName: '明治',
-                            shortName: '明',
-                            alphaName: 'M',
-                            year: year - consts.yearMeiji
-                        };
+                    for (var i=0; i<eraConsts.length; i++) {
+                        var eraConst = eraConsts[i];
+                        if (year > eraConst.previousYear || i == eraConsts.length -1) {
+                            var copiedEra = {};
+                            for(var key in eraConst) {
+                                copiedEra[key] = eraConst[key];
+                            }
+                            copiedEra.year = year - eraConst.previousYear;
+                            return copiedEra;
+                        }
                     }
-                    return ret;
                 },
                 eraStrict: function (date) {
-                    if (date >= consts.dateHeisei) {
-                        return {
-                            longName: '平成',
-                            shortName: '平',
-                            alphaName: 'H',
-                            year: date.getFullYear() - consts.yearHeisei
-                        };
-                    } else if (date >= consts.dateShowa) {
-                        return {
-                            longName: '昭和',
-                            shortName: '昭',
-                            alphaName: 'S',
-                            year: date.getFullYear() - consts.yearShowa
-                        };
-                    } else if (date >= consts.dateTaisho) {
-                        return {
-                            longName: '大正',
-                            shortName: '大',
-                            alphaName: 'T',
-                            year: date.getFullYear() - consts.yearTaisho
-                        };
-                    } else if (date >= consts.dateMeiji) {
-                        return {
-                            longName: '明治',
-                            shortName: '明',
-                            alphaName: 'M',
-                            year: date.getFullYear() - consts.yearMeiji
-                        };
-                    } else {
-                        return {
-                            longName: '西暦',
-                            shortName: '西',
-                            alphaName: 'AD',
-                            year: date.getFullYear()
-                        };
+                    for (var i=0; i<eraConsts.length; i++) {
+                        var eraConst = eraConsts[i];
+                        if (date >= eraConst.startDate || i == eraConsts.length -1) {
+                            var copiedEra = {};
+                            for(var key in eraConst) {
+                                copiedEra[key] = eraConst[key];
+                            }
+                            copiedEra.year = date.getFullYear() - eraConst.previousYear;
+                            return copiedEra;
+                        }
                     }
                 }
             }
